@@ -313,7 +313,7 @@
     </div>
 
     <script>
-        // TEXTE (Jetzt mit Geburtsdatum)
+        // TEXTE (Dein angepasster Text)
         const lines = [
             "Initialisiere System...",
             "...",
@@ -321,7 +321,7 @@
             "Suche nach der wichtigsten Person...",
             "...",
             "Zielperson identifiziert: Helin Bayar", 
-            "Geburtsdatum: 26.01.2006", // HIER EINGEFÜGT
+            "Geburtsdatum: 26.01.2006", 
             "Starte Tiefen-Scan...",
             "Analysiere das Lächeln...",
             "STATUS: Wunderschön. Strahlt wie die Sonne.",
@@ -347,7 +347,6 @@
         let lineIndex = 0;
         let charIndex = 0;
 
-        // Schreibmaschinen-Effekt
         function typeWriter() {
             if (lineIndex < lines.length) {
                 if (charIndex < lines[lineIndex].length) {
@@ -376,13 +375,11 @@
             typeWriter();
         }
 
-        // GESCHENK ÖFFNEN
         function openGift() {
             document.getElementById('gift-closed').style.display = 'none';
             document.getElementById('gift-reveal').style.display = 'block';
         }
 
-        // ZEIT ZÄHLER 
         function startTimer() {
             const startDate = new Date("2025-09-11T00:00:00").getTime();
             
@@ -400,9 +397,9 @@
             }, 1000);
         }
 
-        // KALENDER EINTRAG (iOS Kompatibel)
+        // JS FUNKTION FÜR DEN BUTTON (Erstellt Datei dynamisch)
         function addToCalendar() {
-            // Datum: 31.01.2026, 19:30 Uhr (Lokal = UTC+1) -> 18:30 UTC
+            // Datum: 31.01.2026, 19:30 Lokal = ca 18:30 UTC
             const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
@@ -417,6 +414,7 @@ END:VCALENDAR`;
 
             const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
             
+            // Simuliert einen Klick auf einen Download-Link
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
             link.setAttribute('download', 'ueberraschung.ics');
