@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM OVERRIDE</title>
+    <style>
+        /* --- GRUNDSTYLES (Hacker Modus) --- */
+        body {
+            background-color: black;
+            color: #0f0; /* Hacker Grün */
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: center; 
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            transition: background 3s ease, color 3s ease;
+        }
+
+        /* --- FRÜHLINGS-THEMA --- */
+        body.spring-theme {
+            background: linear-gradient(to bottom, #ffe2e2, #ffc3a0, #ffaec9);
+            color: #590d38;
+        }
+        
+        body.spring-theme h2 {
+            color: #d63384; 
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        body.spring-theme h3 {
+            margin-top: 0;
+            color: #a61e4d;
+        }
+
+        body.spring-theme p {
+             font-weight: bold;
+        }
+
+        /* --- NEON BILD RAHMEN --- */
+        .spring-theme .photo {
+            border-color: #ff00ff !important; 
+            box-shadow: 0 0 20px #ff00ff, 0 0 50px #ff1493, inset 0 0 10px #ff1493 !important; 
+        }
+
+        /* --- ANIMATIONEN (Hintergrund) --- */
+        .spring-elements {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            display: none;
+        }
+        
+        body.spring-theme .spring-elements {
+            display: block;
+        }
+
+        /* Fallende Blumen */
+        .flower {
+            position: absolute;
+            font-size: 30px;
+            animation: floatDown linear infinite;
+            opacity: 0.7;
+            top: -50px;
+        }
+        @keyframes floatDown {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Aufsteigende Herzen */
+        .bg-heart {
+            position: absolute;
+            color: #ff69b4;
+            opacity: 0;
+            bottom: -50px;
+            animation: floatUpSlow linear infinite;
+            text-shadow: 0 0 5px rgba(255, 182, 193, 0.5);
+        }
+
+        @keyframes floatUpSlow {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            20% { opacity: 0.3; }
+            100% { transform: translateY(-110vh) scale(1.2) rotate(20deg); opacity: 0; }
+        }
+
+
+        /* --- STANDARDS --- */
+        #console {
+            white-space: pre-wrap;
+            text-align: left; 
+            display: inline-block; 
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            z-index: 10;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background-color: #0f0;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        .main-heart {
+            color: red;
+            font-size: 50px;
+            display: block;
+            margin: 20px auto;
+            animation: beat 1s infinite;
+        }
+        @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        
+        .hidden { display: none; }
+
+        .content-container {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 50px;
+        }
+        .photo {
+            width: 85%; 
+            max-width: 400px; 
+            height: auto;
+            border: 3px solid #0f0; 
+            border-radius: 15px; 
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+            transition: all 2s ease;
+        }
+
+        /* --- STATS & TIMER --- */
+        .stats-box {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            width: 85%;
+            max-width: 400px;
+            margin-top: 20px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(255,105,180, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        .timer-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #d63384;
+            margin: 10px 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .milestone {
+            font-size: 0.9em;
+            color: #590d38;
+            margin: 5px 0;
+            border-top: 1px dashed rgba(255,255,255,0.5);
+            padding-top: 5px;
+        }
+
+        /* --- GESCHENK BOX --- */
+        .gift-section {
+            margin-top: 40px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .gift-section:hover {
+            transform: scale(1.05);
+        }
+        .gift-icon {
+            font-size: 60px;
+            animation: shake 2s infinite;
+        }
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+        
+        /* Das Modal/Popup für das Geschenk */
+        #gift-reveal {
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            border: 3px solid #ff69b4;
+            margin-top: 20px;
+            width: 85%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .calendar-btn {
+            background: #007AFF; /* Apple Blue */
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: bold;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Start Button */
+        #start-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        button.start-btn {
+            background: #0f0;
+            color: black;
+            border: none;
+            padding: 20px 40px;
+            font-size: 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px #0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <button class="start-btn" onclick="startShow()">>> SYSTEM STARTEN <<</button>
+    </div>
+
+    <div class="spring-elements">
+        <div class="flower" style="left: 10%; animation-duration: 7s; animation-delay: 0s;">🌸</div>
+        <div class="flower" style="left: 30%; animation-duration: 9s; animation-delay: 2s;">🌹</div>
+        <div class="flower" style="left: 60%; animation-duration: 8s; animation-delay: 1s;">🌸</div>
+        <div class="flower" style="left: 80%; animation-duration: 10s; animation-delay: 3s;">🌷</div>
+        <div class="flower" style="left: 50%; animation-duration: 7.5s; animation-delay: 4s;">🌸</div>
+
+        <div class="bg-heart" style="left: 5%; animation-duration: 15s; font-size: 20px; animation-delay: 1s;">❤</div>
+        <div class="bg-heart" style="left: 25%; animation-duration: 18s; font-size: 35px; animation-delay: 3s;">❤</div>
+        <div class="bg-heart" style="left: 45%; animation-duration: 14s; font-size: 25px; animation-delay: 0s;">❤</div>
+        <div class="bg-heart" style="left: 70%; animation-duration: 20s; font-size: 30px; animation-delay: 5s;">❤</div>
+        <div class="bg-heart" style="left: 90%; animation-duration: 16s; font-size: 22px; animation-delay: 2s;">❤</div>
+    </div>
+
+    <div style="text-align: left; width: 100%; max-width: 600px;">
+        <div id="console"></div>
+        <div class="cursor"></div>
+    </div>
+    
+    <div id="final-surprise" class="hidden">
+        <div class="main-heart">❤️</div>
+        <h2 style="margin-bottom: 10px;">IYIKI DOGDUN HAYATIM!</h2>
+        
+        <p style="font-size: 1.1em; text-align: left; padding: 10px;">
+            Isch nur test was luegsch G -.-
+        </p>
+
+        <div class="content-container">
+            <img src="https://i.postimg.cc/W4K93sb9/IMG-2051.jpg" alt="Wir beide" class="photo">
+
+            <div class="stats-box">
+                <h3>Unsere Zeitlinie 📈</h3>
+                <div>Wir sind zusammen seit:</div>
+                <div id="together-timer" class="timer-display">Berechne...</div>
+                
+                <div class="milestone">
+                    <small>Kennen uns seit: 29.07.2025</small>
+                </div>
+                <div class="milestone">
+                    <small>Erstes Treffen: 17.08.2025</small>
+                </div>
+            </div>
+
+            <div class="gift-section" onclick="openGift()">
+                <div id="gift-closed">
+                    <div class="gift-icon">🎁</div>
+                    <small style="color:#d63384; font-weight:bold;">Klick mich!</small>
+                </div>
+            </div>
+
+            <div id="gift-reveal">
+                <h3>✨ MISSION CLASSIFIED ✨</h3>
+                <p>Am <b>31.01.2026</b> um <b>19:30 Uhr</b></p>
+                <p style="font-size: 1.2em; color: #ff1493;">🙈 Augen zumachen! 🙈</p>
+                <p>Ich habe eine Überraschung für dich.</p>
+                
+                <button onclick="addToCalendar()" class="calendar-btn">
+                    📅 In Kalender speichern
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // TEXTE (Jetzt mit Geburtsdatum)
+        const lines = [
+            "Initialisiere System...",
+            "...",
+            "Verbinde mit Satellit...",
+            "Suche nach der wichtigsten Person...",
+            "...",
+            "Zielperson identifiziert: Helin Bayar", 
+            "Geburtsdatum: 26.01.2006", // HIER EINGEFÜGT
+            "Starte Tiefen-Scan...",
+            "Analysiere das Lächeln...",
+            "STATUS: Wunderschön. Strahlt wie die Sonne.",
+            "Scanne den Charakter...",
+            "ERGEBNIS: Herz aus Gold gefunden.",
+            "Überprüfe Zuneigung...",
+            "WARNUNG: Liebe überschreitet Skala!",
+            "Fehler: Zu viel Perfektion entdeckt.",
+            "Berechne Kompatibilität...",
+            "ERGEBNIS: 1000% Match. Seelenverwandte.",
+            "Lade Geburtstags-Protokoll...",
+            "3...",
+            "2...",
+            "1...",
+            "ACCESS GRANTED. ZEIGE DATEN."
+        ];
+
+        const consoleDiv = document.getElementById('console');
+        const finalDiv = document.getElementById('final-surprise');
+        const cursor = document.querySelector('.cursor');
+        const startScreen = document.getElementById('start-screen');
+        
+        let lineIndex = 0;
+        let charIndex = 0;
+
+        // Schreibmaschinen-Effekt
+        function typeWriter() {
+            if (lineIndex < lines.length) {
+                if (charIndex < lines[lineIndex].length) {
+                    consoleDiv.innerHTML += lines[lineIndex].charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeWriter, 40); 
+                } else {
+                    consoleDiv.innerHTML += "<br>";
+                    charIndex = 0;
+                    lineIndex++;
+                    setTimeout(typeWriter, 800); 
+                }
+            } else {
+                cursor.style.display = 'none';
+                setTimeout(() => {
+                    consoleDiv.parentElement.style.display = 'none';
+                    finalDiv.classList.remove('hidden');
+                    document.body.classList.add('spring-theme');
+                    startTimer(); 
+                }, 1000);
+            }
+        }
+
+        function startShow() {
+            startScreen.style.display = 'none';
+            typeWriter();
+        }
+
+        // GESCHENK ÖFFNEN
+        function openGift() {
+            document.getElementById('gift-closed').style.display = 'none';
+            document.getElementById('gift-reveal').style.display = 'block';
+        }
+
+        // ZEIT ZÄHLER 
+        function startTimer() {
+            const startDate = new Date("2025-09-11T00:00:00").getTime();
+            
+            setInterval(function() {
+                const now = new Date().getTime();
+                const distance = now - startDate;
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById("together-timer").innerHTML = 
+                    days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+            }, 1000);
+        }
+
+        // KALENDER EINTRAG (iOS Kompatibel)
+        function addToCalendar() {
+            // Datum: 31.01.2026, 19:30 Uhr (Lokal = UTC+1) -> 18:30 UTC
+            const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+URL:${document.URL}
+DTSTART:20260131T183000Z
+DTEND:20260131T193000Z
+SUMMARY:🙈 Augen zumachen! (Überraschung)
+DESCRIPTION:Dein Schatz hat eine Überraschung. Augen zu und warten!
+LOCATION:Bei dir
+END:VEVENT
+END:VCALENDAR`;
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', 'ueberraschung.ics');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
