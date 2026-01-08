@@ -156,3 +156,33 @@
             box-shadow: 0 0 10px rgba(255,105,180, 0.3);
             backdrop-filter: blur(5px);
         }
+        .timer-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #d63384;
+            margin: 10px 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .milestone {
+            font-size: 0.9em;
+            color: #590d38;
+            margin: 5px 0;
+            border-top: 1px dashed rgba(255,255,255,0.5);
+            padding-top: 5px;
+        }
+
+        /* --- GESCHENK BOX --- */
+        .gift-section {
+            margin-top: 40px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .gift-section:hover {
+            transform: scale(1.05);
+        }
+        .gift-icon {
+            font-size: 60px;
+            animation: shake 2s infinite;
+        }
+        @keyframes shake {
+            0%, 100% { transform
